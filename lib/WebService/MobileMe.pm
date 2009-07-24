@@ -1,6 +1,6 @@
 package WebService::MobileMe;
 
-# ABSTRACT: access MobileMe (in particular FindMyIphone) from Perl
+# ABSTRACT: access MobileMe iPhone stuffs from Perl
 
 use strict;
 use warnings;
