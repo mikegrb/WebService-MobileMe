@@ -5,8 +5,7 @@ package WebService::MobileMe;
 use strict;
 use warnings;
 
-use JSON;
-use Data::Dumper;
+use JSON 2.00;
 use WWW::Mechanize;
 
 my $accountURL = 'https://secure.me.com/account/';
@@ -149,7 +148,8 @@ WebService::MobileMe - access MobileMe iPhone stuffs from Perl
 
     use WebService::MobileMe;
 
-    my $mme = WebService::MobileMe->new(username => 'yaakov', password => 'HUGELOVE');
+    my $mme = WebService::MobileMe->new(
+        username => 'yaakov', password => 'HUGELOVE' );
     my $location = $mme->locate;
     print <<"EOT";
         As of $location->{date}, $location->{time}, Yaakov was at
@@ -172,7 +172,8 @@ emulating the AJAX browser client.
 
 =head2 C<new>
 
-    my $mme = new WebService::MobileMe->new(username => '', password => '');
+    my $mme = new WebService::MobileMe->new(
+        username => '', password => '');
 
 Returns a new C<WebService::MobileMe> object. Currently the only arguments
 are username and password, coresponding to your MobileMe login.
@@ -190,18 +191,18 @@ returned by Apple.
 This is currently:
 
     $location = {
-              'isAccurate' => bless( do{\(my $o = 0)}, 'JSON::PP::Boolean' ),
-              'longitude' => '-74.51767',
-              'isRecent' => bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' ),
-              'date' => 'July 24, 2009',
-              'status' => 1,
-              'time' => '10:39 AM',
-              'isLocationAvailable' => $VAR1->{'isRecent'},
-              'statusString' => 'locate status available',
-              'isLocateFinished' => $VAR1->{'isAccurate'},
-              'isOldLocationResult' => $VAR1->{'isRecent'},
-              'latitude' => '39.437691',
-              'accuracy' => '323.239746'
+        'isAccurate' => bless( do{\(my $o = 0)}, 'JSON::PP::Boolean' ),
+        'longitude' => '-74.51767',
+        'isRecent' => bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' ),
+        'date' => 'July 24, 2009',
+        'status' => 1,
+        'time' => '10:39 AM',
+        'isLocationAvailable' => $VAR1->{'isRecent'},
+        'statusString' => 'locate status available',
+        'isLocateFinished' => $VAR1->{'isAccurate'},
+        'isOldLocationResult' => $VAR1->{'isRecent'},
+        'latitude' => '39.437691',
+        'accuracy' => '323.239746'
     };
 
 =head2 sendMessage
@@ -232,9 +233,10 @@ first device.  Only the first device is currently captured after logging in.
 The returned structure currently looks like:
 
     $r = {
-              'unacknowledgedMessagePending' => bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' ),
-              'date' => 'July 24, 2009',
-              'status' => 1,
-              'time' => '11:11 AM',
-              'statusString' => 'message sent'
+        'unacknowledgedMessagePending' => 
+            bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' ),
+        'date' => 'July 24, 2009',
+        'status' => 1,
+        'time' => '11:11 AM',
+        'statusString' => 'message sent'
     };
