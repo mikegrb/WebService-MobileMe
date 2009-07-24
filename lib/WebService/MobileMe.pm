@@ -143,8 +143,98 @@ __END__
 
 =head1 NAME
 
-WebService::MobileMe - access MobileMe (in particular FindMyIphone) from Perl
+WebService::MobileMe - access MobileMe iPhone stuffs from Perl
+
+=head1 SYNOPSIS
+
+    use WebService::MobileMe;
+
+    my $mme = WebService::MobileMe->new(username => 'yaakov', password => 'HUGELOVE');
+    my $location = $mme->locate;
+    print <<"EOT";
+        As of $location->{date}, $location->{time}, Yaakov was at
+        $location->{latitude}, $location->{longitude} (plus or minus
+        $location->{accuracy} meters).
+    EOT
+    $mme->sendMessage( message => 'Hi Yaakov!', alarm => 1 );
 
 =head1 DESCRIPTION
 
-Fer doin' stuff with MobileMe
+This module is alpha software released under the release early, release sort
+of often principle.  It works for me but contains no error checking yet, soon
+to come!
+
+This module supports retrieving a latitude/longitude, and sending a message
+to an iPhone via the 'Find My iPhone' service from Apple's MobileMe,
+emulating the AJAX browser client.
+
+=head1 METHODS
+
+=head2 C<new>
+
+    my $mme = new WebService::MobileMe->new(username => '', password => '');
+
+Returns a new C<WebService::MobileMe> object. Currently the only arguments
+are username and password, coresponding to your MobileMe login.
+
+The constructor logs in to Mobile Me and retrieves the first device on the
+account, storing it for use in the other methods.
+
+=head2 C<locate>
+
+    my $location = $mme->locate();
+
+Takes no arguments, returns a referrence to a hash of the information
+returned by Apple.
+
+This is currently:
+
+    $location = {
+              'isAccurate' => bless( do{\(my $o = 0)}, 'JSON::PP::Boolean' ),
+              'longitude' => '-74.51767',
+              'isRecent' => bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' ),
+              'date' => 'July 24, 2009',
+              'status' => 1,
+              'time' => '10:39 AM',
+              'isLocationAvailable' => $VAR1->{'isRecent'},
+              'statusString' => 'locate status available',
+              'isLocateFinished' => $VAR1->{'isAccurate'},
+              'isOldLocationResult' => $VAR1->{'isRecent'},
+              'latitude' => '39.437691',
+              'accuracy' => '323.239746'
+    };
+
+=head2 sendMessage
+
+    my $r = $mme->sendMessage( message => 'Hello, World!', alarm => 1);
+
+Takes one required and three optional arguments.  Returns a structure
+containg the parsed JSON returned by apple
+
+=over 4
+
+=item * C<message> (REQUIRED)
+
+The message to display.
+
+=item * C<alarm>
+
+A true value cause the iPhone to make noise when the message is displayed,
+defaults to false.
+
+=item * C<device_number>
+
+The device number on the account to send the message to.  Defaults to 0, the
+first device.  Only the first device is currently captured after logging in.
+
+=back
+
+The returned structure currently looks like:
+
+    $r = {
+              'unacknowledgedMessagePending' => bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' ),
+              'date' => 'July 24, 2009',
+              'status' => 1,
+              'time' => '11:11 AM',
+              'statusString' => 'message sent'
+    };

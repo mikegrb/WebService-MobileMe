@@ -9,7 +9,7 @@ use lib "$FindBin::Bin/../lib";
 use Data::Dumper;
 use WebService::MobileMe;
 
-my $mme = WebService::MobileMe->new(username => 'yaakov', password=>'mikegrbistseksi');
+my $mme = WebService::MobileMe->new(username => 'yaakov', password=>'BIGLOVE');
 print Dumper($mme->locate);
 print Dumper($mme->sendMessage(message => 'urmom likes messages from me', alarm => 1));
 
