@@ -71,13 +71,13 @@ sub locate {
 }
 
 sub sendMessage {
-    my ( $self, $message, $alarm, $device_number ) = @_;
+    my ( $self, %args ) = @_;
 
-    my %device = %{ $self->{devices}[ $device_number || 0 ] };
+    my %device = %{ $self->{devices}[ $args{device_number} || 0 ] };
     my %req = (
         deviceId        => $device{deviceId},
-        message         => $message,
-        playAlarm       => $alarm ? 'Y' : 'N',
+        message         => $args{message},
+        playAlarm       => $args{alarm} ? 'Y' : 'N',
         deviceType      => $device{deviceType},
         deviceClass     => $device{deviceClass},
         deviceOsVersion => $device{deviceOsVersion} );

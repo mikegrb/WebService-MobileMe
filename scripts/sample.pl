@@ -11,7 +11,7 @@ use WebService::MobileMe;
 
 my $mme = WebService::MobileMe->new(username => 'yaakov', password=>'mikegrbistseksi');
 print Dumper($mme->locate);
-print Dumper($mme->sendMessage('urmom likes messages from me', 1));
+print Dumper($mme->sendMessage(message => 'urmom likes messages from me', alarm => 1));
 
 # $VAR1 = {
 #           'isAccurate' => bless( do{\(my $o = 0)}, 'JSON::PP::Boolean' ),
