@@ -66,7 +66,10 @@ sub locate {
         $webObjects . 'DeviceMgmt.woa/wa/LocateAction/locateStatus',
         { postBody => to_json( \%req ) } );
 
-    return from_json( $self->{mech}->content );
+    my $data;
+    eval { $data = from_json( $self->{mech}->content )};
+    return if $@;
+    return $data;
 }
 
 sub sendMessage {
