@@ -1,4 +1,7 @@
 Revision history for Perl extension WebService::MobileMe
 
+0.002 Wed Nov 04 2009
+    - Update for the September MobileMe site update, better late than never
+
 0.001 Fri Jul 24 2009
     - Initial Release

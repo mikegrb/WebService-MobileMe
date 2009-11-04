@@ -9,21 +9,20 @@ use JSON 2.00;
 use WWW::Mechanize;
 
 my $accountURL = 'https://secure.me.com/account/';
-my $loginURL   = 'https://auth.apple.com/authenticate?service=DockStatus&reauthorize=Y&realm=primary-me&returnURL=&destinationUrl=/account&cancelURL=';
+my $loginURL   = 'https://auth.me.com/authenticate?service=account&ssoNamespace=primary-me&reauthorize=Y&returnURL=aHR0cHM6Ly9zZWN1cmUubWUuY29tL2FjY291bnQvI2ZpbmRteWlwaG9uZQ==&anchor=findmyiphone';
 my $webObjects = 'https://secure.me.com/wo/WebObjects/';
 
 sub new {
     my ( $class, %args ) = @_;
     my $self = {};
     bless $self, $class;
+    $self->{lsc} = {};
 
     $self->{mech} = WWW::Mechanize->new(
-        agent => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_7; en-us) AppleWebKit/530.18 (KHTML, like Gecko) Version/4.0.1 Safari/530.18',
+        agent => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_1; en-us) AppleWebKit/531.9 (KHTML, like Gecko) Version/4.0.3 Safari/531.9',
         autocheck => 0,
     );
 
-    my $r;
-    $self->_mech_get($accountURL);
     $self->_mech_get($loginURL);
     $self->{mech}->submit_form(
         form_name => 'LoginForm',
@@ -31,11 +30,11 @@ sub new {
             { username => $args{username}, password => $args{password} },
     );
 
-    ( my $query_string = $self->{mech}->uri ) =~ s/^[^?]*\?//;
-    $self->_mech_get(
-        $webObjects . 'DockStatus.woa/wa/trampoline?' . $query_string );
     $self->_mech_get($accountURL);
-    $self->_mech_get_js( $webObjects . 'DeviceMgmt.woa/?lang=en' );
+    $self->_mech_get(
+        $webObjects . 'Account2.woa?lang=en&anchor=findmyiphone',
+        'X-Mobileme-Version' => '1.0' );
+    $self->_mech_post_js( $webObjects . 'DeviceMgmt.woa/?lang=en', undef );
 
     # TODO:  multi device support
     $self->{devices} = [];
@@ -50,12 +49,18 @@ sub new {
             deviceOsVersion => $os
             };
     }
+    else {
+        warn "Didn't find new Device\n";
+        return;
+    }
 
     return $self;
 }
 
 sub locate {
     my ($self, $device_number) = @_;
+
+    return unless exists $self->{devices};
 
     my %device = %{ $self->{devices}[ $device_number || 0 ] };
     my %req = (
@@ -125,15 +130,13 @@ sub _js_headers {
 
 sub _get_auth_tokens {
     my $self = shift;
-    my %lsc;
     $self->{mech}->cookie_jar->scan(
         sub {
             my @cookie = @_;
             if ( $cookie[1] =~ /^[li]sc-(.*?)$/ ) {
-                $lsc{$1} = $cookie[2];
+                $self->{lsc}{$1} = $cookie[2];
             }
         } );
-    $self->{lsc} = \%lsc;
     return;
 }
 
@@ -182,7 +185,8 @@ Returns a new C<WebService::MobileMe> object. Currently the only arguments
 are username and password, coresponding to your MobileMe login.
 
 The constructor logs in to Mobile Me and retrieves the first device on the
-account, storing it for use in the other methods.
+account, storing it for use in the other methods.  If something fails, it
+will return undef.
 
 =head2 C<locate>
 
