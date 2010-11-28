@@ -1,5 +1,9 @@
 Revision history for Perl extension WebService::MobileMe
 
+0.003 Sun Nov 28 2010
+    - Switch to the web service the 'Find My iPhone' iOS app uses.
+      Includes updates for the free MobileMe service just launched.
+
 0.002 Wed Nov 04 2009
     - Update for the September MobileMe site update, better late than never
 
