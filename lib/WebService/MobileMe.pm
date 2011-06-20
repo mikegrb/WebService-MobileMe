@@ -22,7 +22,7 @@ my %headers = (
 
 my $default_uuid = '0000000000000000000000000000000000000000';
 my $default_name = 'My iPhone';
-my $base_url     = 'https://fmipmobile.me.com/fmipservice/device/';
+my $base_url     = 'https://fmipmobile.icloud.com/fmipservice/device/';
 
 sub new {
     my ( $class, %args ) = @_;
@@ -108,7 +108,7 @@ sub update {
     my $response;
 
     my $post_content =
-        '{"clientContext":{"appName":"FindMyiPhone","appVersion":"1.1","buildVersion":"99","deviceUDID":"'
+        '{"clientContext":{"appName":"FindMyiPhone","appVersion":"1.2","buildVersion":"145","deviceUDID":"'
         . $self->{uuid}
         . '","inactiveTime":2147483647,"osVersion":"4.2.1","personID":0,"productType":"iPhone3,1"}}';
     my $retry = 1;
@@ -117,7 +117,7 @@ sub update {
         if ($response->code == 330) {
             my $host = $response->headers->header('X-Apple-MME-Host');
             $self->_debug("Updating url to point to $host");
-            $self->{base_url} =~ s|https://fmipmobile.me.com|https://$host|;
+            $self->{base_url} =~ s|https://fmipmobile.icloud.com|https://$host|;
         }
         else {
             $retry = 0;
