@@ -20,9 +20,12 @@ my %headers = (
     'Connection'            => 'keep-alive',
 );
 
-my $default_uuid = '0000000000000000000000000000000000000000';
-my $default_name = 'My iPhone';
-my $base_url     = 'https://fmipmobile.icloud.com/fmipservice/device/';
+my $default_uuid      = '0000000000000000000000000000000000000000';
+my $default_name      = 'My iPhone';
+my $base_url          = 'https://fmipmobile.icloud.com/fmipservice/device/';
+my $fmi_app_version   = '1.2.1';
+my $fmi_build_version = '145';
+my $fmi_os_version    = '4.2.1';
 
 sub new {
     my ( $class, %args ) = @_;
@@ -86,7 +89,7 @@ sub sendMessage {
     $args{alarm} = $args{alarm} ? 'true' : 'false';
     die "Must specify message." unless $args{message};
     my $device = $self->device( $args{device} );
-    my $post_content = sprintf('{"clientContext":{"appName":"FindMyiPhone","appVersion":"1.0","buildVersion":"57","deviceUDID":"0000000000000000000000000000000000000000","inactiveTime":5911,"osVersion":"3.2","productType":"iPad1,1","selectedDevice":"%s","shouldLocate":false},"device":"%s","serverContext":{"callbackIntervalInMS":3000,"clientId":"0000000000000000000000000000000000000000","deviceLoadStatus":"203","hasDevices":true,"lastSessionExtensionTime":null,"maxDeviceLoadTime":60000,"maxLocatingTime":90000,"preferredLanguage":"en","prefsUpdateTime":1276872996660,"sessionLifespan":900000,"timezone":{"currentOffset":-25200000,"previousOffset":-28800000,"previousTransition":1268560799999,"tzCurrentName":"Pacific Daylight Time","tzName":"America/Los_Angeles"},"validRegion":true},"sound":%s,"subject":"%s","text":"%s"}',
+    my $post_content = sprintf(qq|{"clientContext":{"appName":"FindMyiPhone","appVersion":"$fmi_app_version","buildVersion":"$fmi_build_version","deviceUDID":"0000000000000000000000000000000000000000","inactiveTime":5911,"osVersion":"$fmi_os_version","productType":"iPad1,1","selectedDevice":"%s","shouldLocate":false},"device":"%s","serverContext":{"callbackIntervalInMS":3000,"clientId":"0000000000000000000000000000000000000000","deviceLoadStatus":"203","hasDevices":true,"lastSessionExtensionTime":null,"maxDeviceLoadTime":60000,"maxLocatingTime":90000,"preferredLanguage":"en","prefsUpdateTime":1276872996660,"sessionLifespan":900000,"timezone":{"currentOffset":-25200000,"previousOffset":-28800000,"previousTransition":1268560799999,"tzCurrentName":"Pacific Daylight Time","tzName":"America/Los_Angeles"},"validRegion":true},"sound":%s,"subject":"%s","text":"%s"}|,
         $device->{id}, $device->{id},
         $args{alarm}, $args{subject}, $args{message}
     );
@@ -97,7 +100,7 @@ sub remoteLock {
     my ($self, $passcode, $devicenum) = @_;
     die "Must specify passcode." unless $passcode;
     my $device = $self->device( $devicenum );
-    my $post_content = sprintf('{"clientContext":{"appName":"FindMyiPhone","appVersion":"1.0","buildVersion":"57","deviceUDID":"0000000000000000000000000000000000000000","inactiveTime":5911,"osVersion":"3.2","productType":"iPad1,1","selectedDevice":"%s","shouldLocate":false},"device":"%s","oldPasscode":"","passcode":"%s","serverContext":{"callbackIntervalInMS":3000,"clientId":"0000000000000000000000000000000000000000","deviceLoadStatus":"203","hasDevices":true,"lastSessionExtensionTime":null,"maxDeviceLoadTime":60000,"maxLocatingTime":90000,"preferredLanguage":"en","prefsUpdateTime":1276872996660,"sessionLifespan":900000,"timezone":{"currentOffset":-25200000,"previousOffset":-28800000,"previousTransition":1268560799999,"tzCurrentName":"Pacific Daylight Time","tzName":"America/Los_Angeles"},"validRegion":true}}',
+    my $post_content = sprintf(qq|{"clientContext":{"appName":"FindMyiPhone","appVersion":"$fmi_app_version","buildVersion":$fmi_build_version","deviceUDID":"0000000000000000000000000000000000000000","inactiveTime":5911,"osVersion":"$fmi_os_version","productType":"iPad1,1","selectedDevice":"%s","shouldLocate":false},"device":"%s","oldPasscode":"","passcode":"%s","serverContext":{"callbackIntervalInMS":3000,"clientId":"0000000000000000000000000000000000000000","deviceLoadStatus":"203","hasDevices":true,"lastSessionExtensionTime":null,"maxDeviceLoadTime":60000,"maxLocatingTime":90000,"preferredLanguage":"en","prefsUpdateTime":1276872996660,"sessionLifespan":900000,"timezone":{"currentOffset":-25200000,"previousOffset":-28800000,"previousTransition":1268560799999,"tzCurrentName":"Pacific Daylight Time","tzName":"America/Los_Angeles"},"validRegion":true}}|,
         $device->{id}, $device->{id}, $passcode
     );
     return from_json( $self->_post( '/remoteLock', $post_content )->content )->{remoteLock};
@@ -108,9 +111,9 @@ sub update {
     my $response;
 
     my $post_content =
-        '{"clientContext":{"appName":"FindMyiPhone","appVersion":"1.2","buildVersion":"145","deviceUDID":"'
+        qq|{"clientContext":{"appName":"FindMyiPhone","appVersion":"$fmi_app_version","buildVersion":"$fmi_build_version","deviceUDID":"|
         . $self->{uuid}
-        . '","inactiveTime":2147483647,"osVersion":"4.2.1","personID":0,"productType":"iPhone3,1"}}';
+        . qq|","inactiveTime":2147483647,"osVersion":"$fmi_os_version","personID":0,"productType":"iPhone3,1"}}|;
     my $retry = 1;
     while ($retry) {
         $response = $self->_post( '/initClient', $post_content );

@@ -1,5 +1,8 @@
 Revision history for Perl extension WebService::MobileMe
 
+0.005 Sun Oct 03 2011
+    - Update versions of the Find my iPhone app we pretend to be
+
 0.004 Sun Jun 19 2011
     - Update for iCloud changes, WWDC 6/2011
 
