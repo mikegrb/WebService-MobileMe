@@ -2,11 +2,9 @@
 
 WebService::MobileMe - deprecated use WebService::FindMyiPhone
 
-
-
 # DESCRIPTION
 
-This module has been deprecated by [WebService::FindMyiPhone](http://search.cpan.org/perldoc?WebService::FindMyiPhone)
+This module has been deprecated by [WebService::FindMyiPhone](https://github.com/mikegrb/WebService-FindMyiPhone)
 
 # AUTHOR
 
@@ -23,4 +21,4 @@ it under the same terms as Perl itself.
 
 # SEE ALSO
 
-[WebService::FindMyiPhone](http://search.cpan.org/perldoc?WebService::FindMyiPhone)
+[WebService::FindMyiPhone](https://github.com/mikegrb/WebService-FindMyiPhone)
