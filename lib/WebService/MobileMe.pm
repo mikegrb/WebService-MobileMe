@@ -10,6 +10,8 @@ use LWP::UserAgent;
 use MIME::Base64;
 use Data::Dumper;
 
+our $VERSION = '0.06';
+
 my %headers = (
     'X-Apple-Find-Api-Ver'  => '2.0',
     'X-Apple-Authscheme'    => 'UserIdGuest',
@@ -155,163 +157,28 @@ __END__
 
 =head1 NAME
 
-WebService::MobileMe - access MobileMe iPhone stuffs from Perl
+WebService::MobileMe - deprecated use WebService::FindMyiPhone
 
-=head1 SYNOPSIS
-
-    use WebService::MobileMe;
-
-    my $mme = WebService::MobileMe->new(
-        username => 'urmom@me.com', password => 'HUGELOVE' );
-    my $location = $mme->locate;
-
-    $mme->sendMessage( message => 'Hi Yaakov!', alarm => 1 );
-
-    $mme->remoteLock( 42 );
 
 =head1 DESCRIPTION
 
-THIS MODULE THROWS EXCEPTIONS, USE TRY::TINY OR SIMILIAR IF YOU WISH TO CATCH
-THEM.
+This module has been deprecated by L<WebService::FindMyiPhone>
 
-This module is alpha software released under the release early, release sort
-of often principle.  It works for me but contains not much error checking yet,
-soon to come! (maybe)
+=head1 AUTHOR
 
-This module supports retrieving a latitude/longitude, sending a message, and
-remote locking of an iPhone via the 'Find My iPhone' service from Apple's
-MobileMe, emulating the Find My iPhone iOS app.
+Mike Greb E<lt>michael@thegrebs.comE<gt>
 
-Timestamps returned are those returned in the JSON which are JavaScript
-timestamps and thus in miliseconds since the epoch.  Divide by 1000 for
-seconds.
+=head1 COPYRIGHT
 
-=head1 METHODS
+Copyright 2013- Mike Greb
 
-=head2 C<new>
+=head1 LICENSE
 
-    my $mme = new WebService::MobileMe->new(
-        username => '', password => '', debug => 1);
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
-Returns a new C<WebService::MobileMe> object. The only arguments
-are username and password coresponding to your MobileMe login and debug.
+=head1 SEE ALSO
 
-If you have a paid MobileMe account, include the @me.com in the username.
+L<WebService::FindMyiPhone>
 
-The constructor logs in to Mobile Me and retrieves the currently available
-information.  If something fails, it will thow an error.
-
-=head2 C<locate>
-
-    my $location = $mme->locate();
-
-Takes an optional device number, starting at 0.  Returns the raw json parsed
-from Apple.
-
-This is currently:
-
-    $location = {
-        'horizontalAccuracy' => '10',
-        'longitude' => '-74.4966423982358',
-        'latitude' => '39.4651979706557',
-        'positionType' => 'GPS',
-        'timeStamp' => '1290924314359',
-        'isOld' => bless( do{\(my $o = 0)}, 'JSON::XS::Boolean' ),
-        'locationFinished' => bless( do{\(my $o = 1)}, 'JSON::XS::Boolean' )
-    };
-
-NOTE: The timeStamp is a JavaScript timestamp so it is miliseconds since the
-epoch.  Divide by 1000 for seconds since.
-
-=head2 sendMessage
-
-    my $r = $mme->sendMessage( message => 'Hello, World!', alarm => 1);
-
-Takes one required and three optional arguments.  Returns a structure
-containg the parsed JSON returned by apple
-
-=over 4
-
-=item * C<message> (REQUIRED)
-
-The message to display.
-
-=item * C<alarm>
-
-A true value cause the iPhone to make noise when the message is displayed,
-defaults to false.
-
-=item * C<device>
-
-The device number on the account to send the message to.  Defaults to 0, the
-first device.
-
-=back
-
-The returned structure currently looks like:
-
-    $message = {
-        'createTimestamp' => '1290933263675',
-        'statusCode' => '200'
-    }
-
-=head2 remoteLock
-
-    $mme->remoteLock( 42 );
-
-Sends a remote lock request with the designated passcode.  Optionaly also
-takes a device number which defaults to 0, the first device.
-
-The returned structure currently looks like:
-
-    $lock = {
-        'createTimestamp' => '1290929589780',
-        'statusCode' => '2200'
-    }
-
-=head2 device
-
-    my $device = $mme->device()
-
-Takes one optional argument, the device number.  Defaults to device 0, the
-first device.  Returns the full structure for the specified device which
-currently looks like:
-
-    $device = {
-        'a' => 'NotCharging',
-        'isLocating' => bless( do{\(my $o = 1)}, 'JSON::XS::Boolean' ),
-        'deviceModel' => 'FourthGen',
-        'id' => 'deadbeef',
-        'remoteLock' => undef,
-        'msg' => undef,
-        'remoteWipe' => undef,
-        'location' => {
-             'horizontalAccuracy' => '10',
-             'longitude' => '-74.4966423982358',
-             'latitude' => '39.4651979706557',
-             'positionType' => 'GPS',
-             'timeStamp' => '1290924314359',
-             'isOld' => bless( do{\(my $o = 0)}, 'JSON::XS::Boolean' ),
-             'locationFinished' => $VAR1->{'isLocating'}
-        },
-        'features' => {
-             'KEY' => $VAR1->{'isLocating'},
-             'WIP' => $VAR1->{'isLocating'},
-             'LCK' => $VAR1->{'isLocating'},
-             'SND' => $VAR1->{'isLocating'},
-             'LOC' => $VAR1->{'isLocating'},
-             'REM' => $VAR1->{'location'}{'isOld'},
-             'CWP' => $VAR1->{'location'}{'isOld'},
-             'MSG' => $VAR1->{'isLocating'}
-        },
-        'deviceStatus' => '203',
-        'name' => 'mmm cake',
-        'thisDevice' => $VAR1->{'location'}{'isOld'},
-        'b' => '1',
-        'locationEnabled' => $VAR1->{'isLocating'},
-        'deviceDisplayName' => 'iPhone 4',
-        'deviceClass' => 'iPhone'
-    };
-
-remoteWipe, msg, and remoteLock will contain structures similiar to those
-returned by the appropriate methods if they have been used in the recent past.
+=cut
