@@ -1,5 +1,8 @@
 Revision history for Perl extension WebService::MobileMe
 
+0.006 Thu Sep 12 2013
+    - Deprecated, see WebService::FindMyiPhone
+
 0.005 Sun Oct 03 2011
     - Update versions of the Find my iPhone app we pretend to be
 
