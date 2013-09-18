@@ -10,7 +10,7 @@ use LWP::UserAgent;
 use MIME::Base64;
 use Data::Dumper;
 
-our $VERSION = '0.006';
+our $VERSION = '0.007';
 
 my %headers = (
     'X-Apple-Find-Api-Ver'  => '2.0',
